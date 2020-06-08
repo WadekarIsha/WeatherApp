@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+  <html>
+      <head>
+          <meta charset="utf-8">
+          <title>Weather App</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1">
+          <link rel="stylesheet" href="css/weather-icons.min.css">
+          <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+          <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Asap">
+          <link rel="stylesheet" href="css/reset.css">
+          <link rel="stylesheet" href="css/style.css">
+          <link rel="shortcut icon" href="">
+      </head>
+  
+  <body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js"></script>
+    <script src = "js/app.js"></script>
+    
+    <div data-ng-app="myApp">
+        <main>
+        <div data-ng-controller="myController">
+            <header>
+               <h1> AngularJS Weather Application </h1>
+            </header>
+            <!-- SPINNER -->
+            <div class="spinner" data-ng-show="loadingSpinner">
+                <span class="fa fa-sync-alt fa-spin fa-3x fa-fw" aria-label="Fetching..."></span>
+            </div>
+            <div class="card" data-ng-show="success">
+                <div class="col">
+                    <!-- CURRENT WEATHER -->
+                    <div class="location"> {{ location }} </div>
+                    <div class="temp"> {{ currentTemp | number:0 }}&deg; {{ tempType.toUpperCase() }} </div>
+                    <div class="weather-icon" data-ng-class="currentWeatherIcon"></div>
+                    <div class="weather">{{ currentWeather }}</div>
+
+                    <!-- SUNRISE/SUNSET -->
+                    <table class="sunrise-sunset">
+                        <thead>
+                            <tr>
+                                <th>Sunrise</th>
+                                <th>Sunset</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td> {{ sunrise * 1000 | date : "h:mm a" }} </td>
+                                <td> {{ sunset * 1000 | date : "h:mm a" }} </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <!-- BUTTON -->
+                    <button type="button" class="switch {{ tempType }}" data-ng-click="changeTempType()">&deg;{{ tempType.toUpperCase() }}</button>
+                </div>
+
+                <div class="col">
+                    <!-- HOURLY FORECAST -->
+                    <table class="hourly-forecast">
+                        <tbody>
+                            <tr data-ng-repeat="forecast in hourly | limitTo : 24">
+                                <td> {{ forecast.time * 1000 | date:"ha" }} </td>
+                                <td class="wi wi-forecast-io-{{ forecast.icon }}"></td>
+                                <td>
+                                    <span data-ng-show="hourlyFahrenheit">{{ forecast.temperature | number:0 }}&deg;</span>
+                                    <span data-ng-show="hourlyCelsius">{{ (forecast.temperature - 32) * (5/9) | number:0 }}&deg;</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- FIVE_DAY FORECAST-->
+                    <table class="daily-forecast">
+                        <tbody>
+                            <tr data-ng-repeat="forecast in daily | limitTo : 5">
+                                <td> {{ forecast.time * 1000 | date:"EEE" }} </td>
+                                <td>
+                                    <span data-ng-show="dailyFahrenheit">{{ forecast.temperatureMax | number:0 }}&deg;/{{ forecast.temperatureMin | number:0 }}&deg;</span>
+                                    <span data-ng-show="dailyCelsius">{{ (forecast.temperatureMax - 32) * (5/9) | number:0 }}&deg;/{{ (forecast.temperatureMin - 32) * (5/9) | number:0 }}&deg;</span>
+                                </td>
+                                <td class="wi wi-forecast-io-{{ forecast.icon }}"></td>
+                                <td> {{forecast.summary}} </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ERROR MESSAGE -->
+            <p class="message error-message" data-ng-show="errorHandling"><span class="fa fa-exclamation-circle fa-lg fa-fw"></span> {{ errorMessage }}</p>
+        </div>
+        </main>
+
+        <!-- FOOTER -->
+        <footer>
+            <span>Powered by <a href="https://darksky.net/poweredby" target="_blank">Dark Sky</a></span>
+        </footer>
+    </div>
+  </body>
+</html>
